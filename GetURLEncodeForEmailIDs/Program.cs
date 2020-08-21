@@ -12,10 +12,14 @@ namespace GetURLEncodeForEmailIDs
     class Program
     {
         private static string sConn = "Data Source=10.1.203.33;Initial Catalog=CoherentRX_Production;User ID=CRX_ProductionDB;Password=2@c45m1t4;Connection Timeout=120;Column Encryption Setting=Enabled";
+        private static string tokenVector = System.Configuration.ConfigurationManager.AppSettings["TokenVector"];
+        private static string tokenKey = System.Configuration.ConfigurationManager.AppSettings["TokenKey"];
+
 
         static void Main(string[] args)
         {
             WriteToLog LogObj = new WriteToLog();
+            Console.WriteLine("GetURLEncodeForEmailIDs STARTED");
             LogObj.WriteToLogFile("Start --------------------------------");
 
             var emailIDList = getEmailIDs();
@@ -23,11 +27,13 @@ namespace GetURLEncodeForEmailIDs
 
             foreach (int emailID in emailIDList)
             {
-                var s = CRXModels.Utilities.Util.EncryptInfo(emailID.ToString());
-                LogObj.WriteToLogFile("EmailID: " + emailID + "URLEncode Value : " + System.Web.HttpUtility.UrlEncode(s));
+                CRXModels.Utilities.Util.EncryptInfo(emailID.ToString());
+                LogObj.WriteToLogFile("EmailID: " + emailID + "  | URLEncode Value : " + System.Web.HttpUtility.UrlEncode(CRXModels.Utilities.Util.EncryptInfo(emailID.ToString())));
             }
 
             LogObj.WriteToLogFile("END --------------------------------");
+            Console.WriteLine("GetURLEncodeForEmailIDs ENDED");
+            Console.Read();
         }
 
         static List<int> getEmailIDs()
